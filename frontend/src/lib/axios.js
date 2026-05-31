@@ -5,4 +5,18 @@ const api = axios.create({
     baseURL: BASE_URL,
 });
 
+api.interceptors.request.use(async (config) => {
+    try {
+        if (window.Clerk) {
+            const token = await window.Clerk.session?.getToken();
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+        }
+    } catch (error) {
+        console.error("Error setting Authorization header:", error);
+    }
+    return config;
+});
+
 export default api;

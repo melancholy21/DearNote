@@ -4,6 +4,11 @@ import mongoose from "mongoose";
 // 2nd step: You would create a model base off of that schema
 
 const noteSchema = new mongoose.Schema({
+    userId: {
+        type: String,
+        required: true,
+        index: true,
+    },
     title: {
         type: String,
         required: true,
@@ -11,6 +16,19 @@ const noteSchema = new mongoose.Schema({
     content: {
         type: String,
         required: true,
+    },
+    tags: {
+        type: [String],
+        default: [],
+        index: true,
+    },
+    isPinned: {
+        type: Boolean,
+        default: false,
+    },
+    isArchived: {
+        type: Boolean,
+        default: false,
     }
 }, 
     {timestamps: true}
