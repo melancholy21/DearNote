@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 const ConstellationBackground = () => {
   const canvasRef = useRef(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -55,8 +57,11 @@ const ConstellationBackground = () => {
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        // Matching DearNote's primary violet color (#a78bfa) with soft opacity
-        ctx.fillStyle = 'rgba(167, 139, 250, 0.45)';
+        // Matching DearNote's primary violet color (#a78bfa) with soft opacity in dark mode
+        // and warm copper (#8e4f1d) in eye-care light mode
+        ctx.fillStyle = theme === "dearnote"
+          ? 'rgba(167, 139, 250, 0.45)'
+          : 'rgba(142, 79, 29, 0.22)';
         ctx.fill();
       }
 
@@ -118,8 +123,11 @@ const ConstellationBackground = () => {
             + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
           if (distance < (canvas.width / 7.5) * (canvas.height / 7.5)) {
             opacityValue = 1 - (distance / 18000);
-            // Matching DearNote's secondary purple color (#c084fc) with soft opacity
-            ctx.strokeStyle = `rgba(192, 132, 252, ${opacityValue * 0.12})`;
+            // Matching DearNote's secondary purple color (#c084fc) in dark mode
+            // and antique brass (#a77a3f) in eye-care light mode
+            ctx.strokeStyle = theme === "dearnote"
+              ? `rgba(192, 132, 252, ${opacityValue * 0.12})`
+              : `rgba(167, 122, 63, ${opacityValue * 0.06})`;
             ctx.lineWidth = 0.75;
             ctx.beginPath();
             ctx.moveTo(particles[a].x, particles[a].y);
@@ -141,7 +149,7 @@ const ConstellationBackground = () => {
       window.removeEventListener('touchend', handlePointerOut);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <canvas

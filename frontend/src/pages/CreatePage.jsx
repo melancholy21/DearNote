@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import api from '../lib/axios';
 import { marked } from "marked";
 import DOMPurify from "dompurify";
+import ThemeToggle from '../components/ThemeToggle';
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
@@ -13,6 +14,8 @@ const CreatePage = () => {
   const [tagInput, setTagInput] = useState("");
   const [activeTab, setActiveTab] = useState("write");
   const [loading, setLoading] = useState(false);
+  const [noteType, setNoteType] = useState("note"); // "note" or "todo"
+  const [todoStatus, setTodoStatus] = useState("todo"); // "todo", "inprogress", "completed"
 
   const navigate = useNavigate();
 
@@ -27,7 +30,8 @@ const CreatePage = () => {
     setLoading(true);
 
     try {
-      await api.post("/notes", { title, content, tags });
+      const status = noteType === "note" ? "none" : todoStatus;
+      await api.post("/notes", { title, content, tags, status });
       toast.success("Note created successfully!");
       navigate("/");
     } catch (error) {
@@ -68,14 +72,17 @@ const CreatePage = () => {
         </Link>
 
         {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-            <SparklesIcon className="size-5 text-primary" />
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <SparklesIcon className="size-5 text-primary" />
+            </div>
+            <div>
+              <h1 className='text-2xl font-extrabold gradient-text'>Create New Note</h1>
+              <p className="text-sm text-base-content/30 mt-0.5">Capture your thoughts</p>
+            </div>
           </div>
-          <div>
-            <h1 className='text-2xl font-extrabold gradient-text'>Create New Note</h1>
-            <p className="text-sm text-base-content/30 mt-0.5">Capture your thoughts</p>
-          </div>
+          <ThemeToggle />
         </div>
 
         {/* Form card */}
@@ -100,6 +107,77 @@ const CreatePage = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
+            </div>
+
+            {/* Note Type & Status Selection */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Type Selection */}
+              <div>
+                <label className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-base-content/60">
+                    Note Type
+                  </span>
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNoteType("note")}
+                    className={`flex-1 btn rounded-xl btn-sm h-11 border transition-all ${
+                      noteType === "note"
+                        ? "btn-primary font-semibold"
+                        : "btn-ghost bg-base-content/5 border-transparent text-base-content/50 hover:bg-base-content/10"
+                    }`}
+                  >
+                    Standard Note
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNoteType("todo")}
+                    className={`flex-1 btn rounded-xl btn-sm h-11 border transition-all ${
+                      noteType === "todo"
+                        ? "btn-primary font-semibold"
+                        : "btn-ghost bg-base-content/5 border-transparent text-base-content/50 hover:bg-base-content/10"
+                    }`}
+                  >
+                    To-Do Item
+                  </button>
+                </div>
+              </div>
+
+              {/* Status Selection (Visible if To-Do is selected) */}
+              {noteType === "todo" && (
+                <div className="animate-scale-in">
+                  <label className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-base-content/60">
+                      Task Status
+                    </span>
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {[
+                      { id: "todo", label: "To Do" },
+                      { id: "inprogress", label: "In Progress" },
+                      { id: "completed", label: "Completed" }
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setTodoStatus(s.id)}
+                        className={`flex-1 btn rounded-xl btn-xs h-11 text-xs border transition-all ${
+                          todoStatus === s.id
+                            ? s.id === "completed"
+                              ? "btn-success text-success-content font-bold"
+                              : s.id === "inprogress"
+                              ? "btn-warning text-warning-content font-bold"
+                              : "btn-info text-info-content font-bold"
+                            : "btn-ghost bg-base-content/5 border-transparent text-base-content/50 hover:bg-base-content/10"
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Tags Input */}

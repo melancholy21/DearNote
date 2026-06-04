@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { PlusIcon, BookOpenIcon } from "lucide-react";
-
 import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/clerk-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = ({ noteCount }) => {
   return (
@@ -27,6 +27,7 @@ const Navbar = ({ noteCount }) => {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <SignedIn>
               <Link
                 to="/create"

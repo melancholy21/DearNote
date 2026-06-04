@@ -29,6 +29,12 @@ const noteSchema = new mongoose.Schema({
     isArchived: {
         type: Boolean,
         default: false,
+    },
+    status: {
+        type: String,
+        enum: ["none", "todo", "inprogress", "completed"],
+        default: "none",
+        index: true,
     }
 }, 
     {timestamps: true}

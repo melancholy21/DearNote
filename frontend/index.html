@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="DearNote — A beautiful, minimal notes app to organize your thoughts." />
     <title>DearNote</title>
+    <script>
+      (function() {
+        const saved = localStorage.getItem("theme") || "dearnote";
+        document.documentElement.setAttribute("data-theme", saved);
+      })();
+    </script>
   </head>
   <body class="antialiased">
     <div id="root"></div>

@@ -70,37 +70,39 @@ const App = () => {
               <span className="gradient-text font-bold">DearNote</span>
             </div>
 
-            {/* Right: Socials */}
-            <div className="flex items-center gap-3">
-              <h2>Follow my socials: </h2>
-              <a
-                href="https://www.instagram.com/melancholy21u"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors p-2 rounded-lg hover:bg-base-content/5"
-                aria-label="Instagram"
-              >
-                <Instagram className="size-4" />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/dela-torre-angelo-2103z/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors p-2 rounded-lg hover:bg-base-content/5"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="size-4" />
-              </a>
-              <a
-                href="https://github.com/melancholy21"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors p-2 rounded-lg hover:bg-base-content/5"
-                aria-label="GitHub"
-              >
-                <Github className="size-4" />
-              </a>
-            </div>
+            {/* Right: Socials (Only shown when logged out) */}
+            <SignedOut>
+              <div className="flex items-center gap-3">
+                <h2>Follow my socials: </h2>
+                <a
+                  href="https://www.instagram.com/melancholy21u"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors p-2 rounded-lg hover:bg-base-content/5"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="size-4" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/dela-torre-angelo-2103z/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors p-2 rounded-lg hover:bg-base-content/5"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="size-4" />
+                </a>
+                <a
+                  href="https://github.com/melancholy21"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors p-2 rounded-lg hover:bg-base-content/5"
+                  aria-label="GitHub"
+                >
+                  <Github className="size-4" />
+                </a>
+              </div>
+            </SignedOut>
           </div>
         </div>
       </footer>

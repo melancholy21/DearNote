@@ -40,6 +40,8 @@ const HomePage = () => {
   const [selectedTag, setSelectedTag] = useState(null);
   const [showArchived, setShowArchived] = useState(false);
   const [availableTags, setAvailableTags] = useState([]);
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
   // 1. Fetch available tags globally for user
   useEffect(() => {
@@ -62,12 +64,29 @@ const HomePage = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       setLoading(true);
+      
+      let statusParam = undefined;
+      if (selectedType === "notes") {
+        statusParam = "notes-only";
+      } else if (selectedType === "todos") {
+        if (selectedStatus === "all") {
+          statusParam = "todo-all";
+        } else {
+          statusParam = selectedStatus;
+        }
+      } else {
+        if (selectedStatus !== "all") {
+          statusParam = selectedStatus;
+        }
+      }
+
       try {
         const res = await api.get("/notes", {
           params: {
             search,
             tag: selectedTag || undefined,
-            archived: showArchived
+            archived: showArchived,
+            status: statusParam
           }
         });
         setNotes(res.data);
@@ -85,7 +104,7 @@ const HomePage = () => {
     };
 
     fetchNotes();
-  }, [search, selectedTag, showArchived]);
+  }, [search, selectedTag, showArchived, selectedType, selectedStatus]);
 
   return (
     <div className="min-h-screen">
@@ -104,6 +123,10 @@ const HomePage = () => {
             showArchived={showArchived}
             setShowArchived={setShowArchived}
             availableTags={availableTags}
+            selectedType={selectedType}
+            setSelectedType={setSelectedType}
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
           />
         )}
 
@@ -129,6 +152,8 @@ const HomePage = () => {
             onClearFilters={() => {
               setSearch("");
               setSelectedTag(null);
+              setSelectedType("all");
+              setSelectedStatus("all");
             }}
             onGoToActive={() => setShowArchived(false)}
           />

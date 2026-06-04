@@ -60,6 +60,53 @@ const NoteCard = ({ note, setNotes, index = 0 }) => {
     }
   };
 
+  const handleToggleStatus = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    let nextStatus = "todo";
+    if (note.status === "todo") nextStatus = "inprogress";
+    else if (note.status === "inprogress") nextStatus = "completed";
+    else if (note.status === "completed") nextStatus = "todo";
+    
+    try {
+      const res = await api.put(`/notes/${note._id}`, {
+        title: note.title,
+        content: note.content,
+        tags: note.tags,
+        status: nextStatus
+      });
+      setNotes((prev) =>
+        prev.map((n) => (n._id === note._id ? res.data : n))
+      );
+      toast.success(`Status updated to ${nextStatus === "inprogress" ? "In Progress" : nextStatus === "todo" ? "To Do" : "Completed"}`);
+    } catch (error) {
+      toast.error("Failed to update status");
+    }
+  };
+
+  const handleCheckboxToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const nextStatus = note.status === "completed" ? "todo" : "completed";
+    
+    try {
+      const res = await api.put(`/notes/${note._id}`, {
+        title: note.title,
+        content: note.content,
+        tags: note.tags,
+        status: nextStatus
+      });
+      setNotes((prev) =>
+        prev.map((n) => (n._id === note._id ? res.data : n))
+      );
+      toast.success(nextStatus === "completed" ? "Task completed!" : "Task marked as active");
+    } catch (error) {
+      toast.error("Failed to update task completion");
+    }
+  };
+
   const getMarkdownPreview = (text) => {
     const rawHtml = marked.parse(text || "");
     const cleanHtml = DOMPurify.sanitize(rawHtml);
@@ -80,9 +127,22 @@ const NoteCard = ({ note, setNotes, index = 0 }) => {
           <div className="p-5 flex flex-col gap-3">
             {/* Title row */}
             <div className="flex items-start justify-between gap-3">
-              <h3 className="font-semibold text-[15px] text-base-content line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-300">
-                {note.title}
-              </h3>
+              <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                {note.status && note.status !== "none" && (
+                  <input
+                    type="checkbox"
+                    checked={note.status === "completed"}
+                    onChange={handleCheckboxToggle}
+                    onClick={(e) => e.stopPropagation()}
+                    className="checkbox checkbox-primary checkbox-sm mt-0.5 rounded-lg flex-shrink-0"
+                  />
+                )}
+                <h3 className={`font-semibold text-[15px] text-base-content line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-300 ${
+                  note.status === "completed" ? "line-through text-base-content/30" : ""
+                }`}>
+                  {note.title}
+                </h3>
+              </div>
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 {note.isPinned && (
                   <span className="text-primary hover:text-primary-focus p-0.5" onClick={handleTogglePin}>
@@ -97,10 +157,32 @@ const NoteCard = ({ note, setNotes, index = 0 }) => {
               </div>
             </div>
 
-            {/* Tags row */}
-            {note.tags && note.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-0.5">
-                {note.tags.map((tag) => (
+            {/* Tags & Status row */}
+            {((note.status && note.status !== "none") || (note.tags && note.tags.length > 0)) && (
+              <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                {note.status && note.status !== "none" && (
+                  <button
+                    onClick={handleToggleStatus}
+                    className={`text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full transition-all flex items-center gap-1 ${
+                      note.status === "completed"
+                        ? "status-badge-completed"
+                        : note.status === "inprogress"
+                        ? "status-badge-inprogress"
+                        : "status-badge-todo"
+                    }`}
+                    title="Click to cycle task status"
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${
+                      note.status === "completed" ? "bg-success" : note.status === "inprogress" ? "bg-warning" : "bg-info"
+                    }`} />
+                    {note.status === "completed"
+                      ? "Completed"
+                      : note.status === "inprogress"
+                      ? "In Progress"
+                      : "To Do"}
+                  </button>
+                )}
+                {note.tags && note.tags.map((tag) => (
                   <span
                     key={tag}
                     className="text-[10px] font-medium bg-base-content/5 text-base-content/40 px-2 py-0.5 rounded-full"

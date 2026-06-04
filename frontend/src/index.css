@@ -288,3 +288,193 @@ body {
   padding: 1px 4px;
   border-radius: 4px;
 }
+
+/* =============================================
+   NOTEBOOK PAGE DESIGN
+   ============================================= */
+.notebook-sheet {
+  position: relative;
+  background: oklch(var(--b1) / 0.7);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid oklch(var(--bc) / 0.09);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+  padding: 2.5rem 2.25rem; /* Symmetrical padding for clean visual hierarchy */
+  height: 620px; /* Locked fixed height to prevent layout jumps on page turn */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 640px) {
+  .notebook-sheet {
+    padding: 2rem 1.25rem; /* Clean symmetrical padding on mobile to maximize text space */
+    height: 520px; /* Slightly shorter height on small viewports */
+    border-radius: 1.25rem;
+  }
+}
+
+/* Notebook lines container */
+.notebook-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  height: 100%;
+}
+
+.notebook-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Notebook internal scrollbar styling */
+.notebook-content::-webkit-scrollbar {
+  width: 4px;
+}
+.notebook-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.notebook-content::-webkit-scrollbar-thumb {
+  background: oklch(var(--bc) / 0.15);
+  border-radius: 9999px;
+}
+
+/* markdown style fixes for standard text alignment and readability */
+.notebook-content {
+  font-size: 1.025rem;
+  line-height: 1.8;
+  color: oklch(var(--bc) / 0.85);
+}
+
+.notebook-content p {
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+  color: oklch(var(--bc) / 0.8);
+}
+
+.notebook-content h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: oklch(var(--bc));
+  line-height: 1.3;
+}
+
+.notebook-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1.75rem;
+  margin-bottom: 0.85rem;
+  color: oklch(var(--bc));
+  line-height: 1.3;
+}
+
+.notebook-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: oklch(var(--bc));
+  line-height: 1.3;
+}
+
+.notebook-content strong {
+  font-weight: 700;
+  color: oklch(var(--bc));
+}
+
+.notebook-content em {
+  font-style: italic;
+}
+
+.notebook-content ul,
+.notebook-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.notebook-content ul {
+  list-style-type: disc;
+}
+
+.notebook-content ol {
+  list-style-type: decimal;
+}
+
+.notebook-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.75;
+  padding-left: 0.25rem;
+}
+
+/* Code Blocks & inline code formatting */
+.notebook-content pre {
+  background: oklch(var(--b2) / 0.8);
+  border: 1px solid oklch(var(--bc) / 0.08);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.notebook-content code {
+  font-family: monospace;
+  font-size: 0.9em;
+  background: oklch(var(--b2) / 0.9);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.375rem;
+  color: oklch(var(--p));
+}
+
+.notebook-content pre code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: oklch(var(--bc) / 0.9);
+  font-size: 0.85rem;
+}
+
+/* Blockquotes */
+.notebook-content blockquote {
+  border-left: 4px solid oklch(var(--p) / 0.5);
+  background: oklch(var(--p) / 0.05);
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: italic;
+  color: oklch(var(--bc) / 0.75);
+}
+
+/* Horizontal Rules */
+.notebook-content hr {
+  border: 0;
+  border-top: 1px solid oklch(var(--bc) / 0.1);
+  margin: 2rem 0;
+}
+
+/* =============================================
+   TODO STATUS PILLS & BADGES
+   ============================================= */
+.status-badge-todo {
+  background-color: oklch(var(--in) / 0.12);
+  color: oklch(var(--in));
+  border: 1px solid oklch(var(--in) / 0.2);
+}
+
+.status-badge-inprogress {
+  background-color: oklch(var(--wa) / 0.12);
+  color: oklch(var(--wa));
+  border: 1px solid oklch(var(--wa) / 0.2);
+}
+
+.status-badge-completed {
+  background-color: oklch(var(--su) / 0.12);
+  color: oklch(var(--su));
+  border: 1px solid oklch(var(--su) / 0.2);
+}

@@ -9,6 +9,10 @@ const SearchAndFilters = ({
   showArchived,
   setShowArchived,
   availableTags,
+  selectedType,
+  setSelectedType,
+  selectedStatus,
+  setSelectedStatus,
 }) => {
   const [localSearch, setLocalSearch] = useState(search);
 
@@ -69,6 +73,63 @@ const SearchAndFilters = ({
             Archived
           </button>
         </div>
+      </div>
+
+      {/* Type and Status Filters Row */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-start pt-3 border-t border-base-content/5 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-base-content/30 font-medium">Type:</span>
+          <div className="flex gap-1.5">
+            {[
+              { id: "all", label: "All" },
+              { id: "notes", label: "Notes Only" },
+              { id: "todos", label: "To-Dos" }
+            ].map((t) => (
+              <button
+                key={t.id}
+                onClick={() => {
+                  setSelectedType(t.id);
+                  if (t.id === "notes") {
+                    setSelectedStatus("all");
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-full transition-all border ${
+                  selectedType === t.id
+                    ? "bg-primary/10 text-primary border-primary/20 font-semibold"
+                    : "bg-base-content/5 text-base-content/50 border-transparent hover:bg-base-content/10"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {selectedType !== "notes" && (
+          <div className="flex items-center gap-2">
+            <span className="text-base-content/30 font-medium sm:ml-4">Status:</span>
+            <div className="flex gap-1.5 flex-wrap">
+              {[
+                { id: "all", label: "All Tasks" },
+                { id: "todo", label: "To Do" },
+                { id: "inprogress", label: "In Progress" },
+                { id: "completed", label: "Completed" }
+              ].map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSelectedStatus(s.id)}
+                  className={`px-3 py-1.5 rounded-full transition-all border ${
+                    selectedStatus === s.id
+                      ? "bg-primary/10 text-primary border-primary/20 font-semibold"
+                      : "bg-base-content/5 text-base-content/50 border-transparent hover:bg-base-content/10"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tags Row */}

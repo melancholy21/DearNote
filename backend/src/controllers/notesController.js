@@ -3,7 +3,7 @@ import Note from "../models/Note.js"
 export async function getAllNotes (req, res) {
     try {
         const userId = req.auth.userId;
-        const { search, tag, archived } = req.query;
+        const { search, tag, archived, status } = req.query;
 
         // Base query with user isolation
         const query = { userId };
@@ -13,6 +13,17 @@ export async function getAllNotes (req, res) {
             query.isArchived = true;
         } else {
             query.isArchived = false;
+        }
+
+        // Handle status filter
+        if (status) {
+            if (status === "todo-all") {
+                query.status = { $in: ["todo", "inprogress", "completed"] };
+            } else if (status === "notes-only") {
+                query.status = "none";
+            } else if (["none", "todo", "inprogress", "completed"].includes(status)) {
+                query.status = status;
+            }
         }
 
         // Handle text search filter
@@ -52,7 +63,7 @@ export async function getNoteById (req, res) {
 export async function createNote (req, res) {
     try {
         const userId = req.auth.userId;
-        const { title, content, tags } = req.body;
+        const { title, content, tags, status } = req.body;
         
         // Clean and format tags if provided
         const formattedTags = Array.isArray(tags) 
@@ -63,7 +74,8 @@ export async function createNote (req, res) {
             userId, 
             title, 
             content, 
-            tags: formattedTags 
+            tags: formattedTags,
+            status: status || "none"
         });
 
         const savedNote = await note.save();
@@ -77,13 +89,16 @@ export async function createNote (req, res) {
 export async function updateNote (req, res) {
     try {
         const userId = req.auth.userId;
-        const { title, content, tags } = req.body;
+        const { title, content, tags, status } = req.body;
 
         const updateData = { title, content };
         if (tags !== undefined) {
             updateData.tags = Array.isArray(tags)
                 ? tags.map(t => t.trim().toLowerCase()).filter(Boolean)
                 : [];
+        }
+        if (status !== undefined) {
+            updateData.status = status;
         }
 
         const updatedNote = await Note.findOneAndUpdate(
